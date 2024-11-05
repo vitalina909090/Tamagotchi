@@ -91,7 +91,6 @@ public:
         cout << "Улюблена їжа: " << favorite_food << endl;
         cout << "===================================" << endl;
     }
-
     void shop() {
         int choice_shop;
         int choice_food;
