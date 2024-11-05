@@ -4,13 +4,12 @@
 #include <string>
 #include <cstdlib>
 #include <ctime>
- 
 #include <map>
 #include <fstream>
 #include <chrono>
-
 #include <thread>
 using namespace std;
+
 class Tamagotchi {
 private:
     struct Product {
@@ -25,61 +24,30 @@ private:
         int num_soapy_washcloth;
     };
 
-    string name;
-    string favorite;
-    string gender;
-    string favorite_food;
+    string name, favorite, gender, favorite_food;
     int choice_menu;
+
     int money;
     Product product;
-    int food_indicator;
-    int wash_indicator;
-    int love_indicator;
 
+    int food_indicator, wash_indicator, love_indicator;
     time_t last_update_time;
     time_t last_love_update;
 
 public:
     Tamagotchi()
-        : name(""),
-        favorite(""),
-        gender(""),
-        favorite_food(""),
-        choice_menu(0),
-        money(0),
-        product{ 2, 0, 0, 0, 0, 2, 0, 1, 0 },
-        food_indicator(100),
-        wash_indicator(100),
-        love_indicator(0),
-        last_update_time(time(nullptr)),
-        last_love_update(0) {}
+        : name(""), favorite(""), gender(""), favorite_food(""), choice_menu(0), money(0), product{ 2, 0, 0, 0, 0, 2, 0, 1, 0 },
+        food_indicator(100), wash_indicator(100), love_indicator(0), last_update_time(time(nullptr)), last_love_update(time(nullptr)) {}
 
-    void setName(const string& petName) {
-        name = petName;
-    }
-    void setFavorite(const string& petFavorite) {
-        favorite = petFavorite;
-    }
-    void setGender(const string& petGender) {
-        gender = petGender;
-    }
-    void setFood(const string& petFood) {
-        favorite_food = petFood;
-    }
-    void setChoice(int petChoice_menu) {
-        choice_menu = petChoice_menu;
-    }
+    void setName(const string& petName) { name = petName; }
+    void setFavorite(const string& petFavorite) { favorite = petFavorite; }
+    void setGender(const string& petGender) { gender = petGender; }
+    void setFood(const string& petFood) { favorite_food = petFood; }
 
     string getName() const { return name; }
     string getFavorite() const { return favorite; }
     string getGender() const { return gender; }
     string getFood() const { return favorite_food; }
-    int getChoice() const { return choice_menu; }
-    int getMoney() const { return money; }
-    int getFoodIndicator() const { return food_indicator; }
-    int getWashIndicator() const { return wash_indicator; }
-    int getLoveIndicator() const { return love_indicator; }
-
 
     void passport() const {
         cout << "===================================" << endl;
@@ -91,11 +59,13 @@ public:
         cout << "Улюблена їжа: " << favorite_food << endl;
         cout << "===================================" << endl;
     }
+
     void shop() {
-        int choice_shop;
-        int choice_food;
-        int choice_soap_products;
-        int choice_buy;
+        int choice_shop, choice_buy;
+        int choice_product;
+
+        string buyer_choice;
+        int price = 0;
 
         map<string, int> goods;
         goods["Сухий корм"] = 40;
@@ -113,19 +83,19 @@ public:
         cout << "============================================================" << endl;
 
         cout << R"(
-                /'~~~~~~~\|/
-               ,/'     ____ `\
-              |   ,,__/    '| \
-             ,|_./___   ___ |  |
-               |-(  .)-(.  )`|,'
-              (|  ~~~   ~~~   |)
-               |     `-'      |'
-                \   ,____,   /
-                 \   `--'   /
-                  |\______/|
-                 |\________/|
-                 \----------/
-            )" << endl;
+            /'~~~~~~~\|/
+           ,/'     ____ \
+          |   ,,__/    '| \
+         ,|_./___   ___ |  |
+           |-(  .)-(.  )|,'
+          (|  ~~~   ~~~   |)
+           |     -'      |'
+            \   ,____,   /
+             \   --'   /
+              |\______/|
+             |\________/|
+             \----------/
+        )" << endl;
 
         cout << "\nПривіт! Вітаю тебе у моєму магазині, обирай що подобається" << endl;
 
@@ -133,205 +103,114 @@ public:
             cout << "\n[1] Відділ з їжою\n[2] Відділ миючих засобів\n[0] Повернутись назад" << endl;
             cin >> choice_shop;
 
-            switch (choice_shop) {
-            case 1:
-                do {
-                    cout << "\nУ вас " << money << " M" << endl;
+            if (choice_shop == 0) {
+                main_screen();
+                return;
+            }
+
+            while (choice_shop == 1 || choice_shop == 2) {
+                cout << "\nУ вас " << money << " M" << endl;
+
+                if (choice_shop == 1) {
                     cout << "Їжа для тваринок:" << endl;
-                    cout << "[1] Сухий корм - 40 М" << endl;
-                    cout << "[2] Сіно - 20 М" << endl;
-                    cout << "[3] Морква - 100 М" << endl;
-                    cout << "[4] Банан - 80 М" << endl;
-                    cout << "[5] Риба - 90 М" << endl;
-                    cout << "[0] Повернутись назад" << endl;
-                    cout << "Виберіть товар: ";
-                    cin >> choice_food;
+                    cout << "[1] Сухий корм - " << goods["Сухий корм"] << " М" << endl;
+                    cout << "[2] Сіно - " << goods["Сіно"] << " М" << endl;
+                    cout << "[3] Морква - " << goods["Морква"] << " М" << endl;
+                    cout << "[4] Банан - " << goods["Банан"] << " М" << endl;
+                    cout << "[5] Риба - " << goods["Риба"] << " М" << endl;
+                }
+                else {
+                    cout << "Миючі засоби:" << endl;
+                    cout << "[1] Мило - " << goods["Мило"] << " М" << endl;
+                    cout << "[2] Шампунь - " << goods["Шампунь"] << " М" << endl;
+                    cout << "[3] Гель для душу - " << goods["Гель для душу"] << " М" << endl;
+                    cout << "[4] Намилена мочалка - " << goods["Намилена мочалка"] << " М" << endl;
+                }
 
-                    if (choice_food == 0) break;
+                cout << "[0] Повернутись назад" << endl;
+                cout << "Виберіть товар: ";
+                cin >> choice_product;
 
-                    switch (choice_food) {
+                if (choice_product == 0) break;
+
+
+                if (choice_shop == 1) {
+                    switch (choice_product) {
                     case 1:
-                        cout << "Ви вибрали: Сухий корм - 40 М" << endl;
+                        buyer_choice = "Сухий корм";
+                        price = goods["Сухий корм"];
                         break;
                     case 2:
-                        cout << "Ви вибрали: Сіно - 20 М" << endl;
+                        buyer_choice = "Сіно";
+                        price = goods["Сіно"];
                         break;
                     case 3:
-                        cout << "Ви вибрали: Морква - 100 М" << endl;
+                        buyer_choice = "Морква";
+                        price = goods["Морква"];
                         break;
                     case 4:
-                        cout << "Ви вибрали: Банан - 80 М" << endl;
+                        buyer_choice = "Банан";
+                        price = goods["Банан"];
                         break;
                     case 5:
-                        cout << "Ви вибрали:  Риба - 90 М" << endl;
+                        buyer_choice = "Риба";
+                        price = goods["Риба"];
                         break;
-                    default:
-                        cout << "Введіть число 1-5" << endl;
-                        continue;
+                    default: cout << "Введіть число 1-5" << endl; continue;
                     }
-
-                    cout << "Купити? [1] Так [2] Ні: ";
-                    cin >> choice_buy;
-                    switch (choice_buy) {
+                }
+                else {
+                    switch (choice_product) {
                     case 1:
-                        switch (choice_food) {
-                        case 1:
-                            if (money < goods["Сухий корм"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else{
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 40;
-                                product.num_dry_food++;
-                            }
-                            break;
-                        case 2:
-                            if (money < goods["Сіно"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 20;
-                                product.num_hay++;
-                            }
-                            break;
-                        case 3:
-                            if (money < goods["Морква"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 100;
-                                product.num_carrot++;
-                            }
-                            break;
-                        case 4:
-                            if (money < goods["Банан"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 80;
-                                product.num_banana++;
-                            }
-                            break;
-                        case 5:
-                            if (money < goods["Риба"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 90;
-                                product.num_fish++;
-                            }
-                            break;
-                        }
-                        
+                        buyer_choice = "Мило";
+                        price = goods["Мило"];
                         break;
                     case 2:
-                        cout << "Ви скасували покупку." << endl;
-                        break;
-                    default:
-                        cout << "Введіть число 1-2" << endl;
-                    }
-
-                } while (true);
-                break;
-
-            case 2:
-                do {
-                    cout << "\nУ вас " << money << " M" << endl;
-                    cout << "Миючі засоби:" << endl;
-                    cout << "[1] Мило - 150 грн" << endl;
-                    cout << "[2] Шампунь - 130 грн" << endl;
-                    cout << "[3] Гель для душу - 120 грн" << endl;
-                    cout << "[4] Намилена мочалка - 100 грн" << endl;
-                    cout << "[0] Повернутись назад" << endl;
-                    cout << "Виберіть товар: ";
-                    cin >> choice_soap_products;
-
-                    if (choice_soap_products == 0) break;
-
-                    switch (choice_soap_products) {
-                    case 1:
-                        cout << "Ви вибрали: Мило - 150 грн" << endl;
-                        break;
-                    case 2:
-                        cout << "Ви вибрали: Шампунь - 130 грн" << endl;
+                        buyer_choice = "Шампунь";
+                        price = goods["Шампунь"];
                         break;
                     case 3:
-                        cout << "Ви вибрали: Гель для душу - 120 грн" << endl;
+                        buyer_choice = "Гель для душу";
+                        price = goods["Гель для душу"];
                         break;
                     case 4:
-                        cout << "Ви вибрали: Намилена мочалка - 100 грн" << endl;
+                        buyer_choice = "Намилена мочалка";
+                        price = goods["Намилена мочалка"];
                         break;
                     default:
                         cout << "Введіть число 1-4" << endl;
                         continue;
                     }
+                }
 
-                    cout << "Купити? [1] Так [2] Ні: ";
-                    cin >> choice_buy;
-                    switch (choice_buy) {
-                    case 1:
-                        switch (choice_soap_products) {
-                        case 1:
-                            if (money < goods["Мило"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 150;
-                                product.num_soap++;
-                            }
-                            break;
-                        case 2:
-                            if (money < goods["Шампунь"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 130;
-                                product.num_shampoo++;
-                            }
-                            break;
-                        case 3:
-                            if (money < goods["Гель для душу"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 120;
-                                product.num_shower_gel++;
-                            }
-                            break;
-                        case 4:
-                            if (money < goods["Намилена мочалка"]) {
-                                cout << "Недостатньо монет!" << endl;
-                            }
-                            else {
-                                cout << "Дякуємо за покупку!" << endl;
-                                money = money - 100;
-                                product.num_soapy_washcloth++;
-                            }
-                            break;
-                        }
-                        break;
-                    case 2:
-                        cout << "Ви скасували покупку." << endl;
-                        break;
-                    default:
-                        cout << "Введіть число 1-2" << endl;
+                cout << "Ви вибрали: " << buyer_choice << " - " << price << " М" << endl;
+                cout << "Купити? [1] Так [2] Ні: ";
+                cin >> choice_buy;
+
+                if (choice_buy == 1) {
+                    if (money < price) {
+                        cout << "Недостатньо монет!" << endl;
                     }
-
-                } while (true);
-                break;
-
-            case 0:
-                main_screen();
-                return;
-            default:
-                cout << "Введіть число 0-2" << endl;
+                    else {
+                        cout << "Дякуємо за покупку!" << endl;
+                        money -= price;
+                        if (buyer_choice == "Сухий корм") product.num_dry_food++;
+                        else if (buyer_choice == "Сіно") product.num_hay++;
+                        else if (buyer_choice == "Морква") product.num_carrot++;
+                        else if (buyer_choice == "Банан") product.num_banana++;
+                        else if (buyer_choice == "Риба") product.num_fish++;
+                        else if (buyer_choice == "Мило") product.num_soap++;
+                        else if (buyer_choice == "Шампунь") product.num_shampoo++;
+                        else if (buyer_choice == "Гель для душу") product.num_shower_gel++;
+                        else if (buyer_choice == "Намилена мочалка") product.num_soapy_washcloth++;
+                    }
+                }
+                else if (choice_buy == 2) {
+                    cout << "Ви скасували покупку." << endl;
+                }
+                else {
+                    cout << "Введіть число 1-2" << endl;
+                }
             }
         } while (true);
     }
@@ -417,10 +296,10 @@ public:
                     do {
                         cout << "Зіграємо ще? [1] Так [0] Ні" << endl;
                         cin >> choice_more;
-                        if (choice_more < 0 || choice_more > 1) {cout << "Введіть число 0-1" << endl;}
-                        if (choice_more ==0 ) { system("cls"); }
+                        if (choice_more < 0 || choice_more > 1) { cout << "Введіть число 0-1" << endl; }
+                        if (choice_more == 0) { system("cls"); }
                     } while (choice_more < 0 || choice_more > 1);
-                    
+
                 } while (choice_more != 0);
 
                 break;
@@ -863,7 +742,7 @@ o   .     -. .----<(o)_--. .-'
         cout << "[1] Обійняти\n[2] Погладити\n[3] Пограти\n[0] Повернутись назад" << endl;
         cin >> choise_love;
 
-         if (difftime(time_now, last_love_update) >= 1800) {
+        if (difftime(time_now, last_love_update) >= 1800) {
             do {
                 system("cls");
                 int love_balance = love_indicator / 20;
@@ -963,7 +842,7 @@ o   .     -. .----<(o)_--. .-'
             } while (true);
         }
         else {
-           system("cls");
+            system("cls");
             cout << "============================================================" << endl;
             cout << "                     Проявити турботу                       " << endl;
             cout << "============================================================" << endl;
@@ -983,7 +862,7 @@ o   .     -. .----<(o)_--. .-'
         }
     }
 
-    void inventory(){
+    void inventory () const {
         bool availability_food = false, availability_wash = false;
 
         cout << "============================================================" << endl;
@@ -1158,61 +1037,61 @@ o   .     -. .----<(o)_--. .-'
                        `"`
     )" << endl;
 
-//
-//            cout << R"(
-//                __,__ 
-//        .--.  .-"     "-.  .--.
-//       / .. \/  .-. .-.  \/ .. \
-//      | |  '|  /   Y   \  |'  | |
-//      | \   \  \ 0 | 0 /  /   / |
-//       \ '- ,\.-"`` ``"-./, -' /
-//        `'-' /_   ^ ^   _\ '-'`
-//        .--'|  \._ _ _./  |'--.
-//      /`    \   \.-.  /   /    `\
-//     /       '._/  |-' _.'       \
-//    /          ;  /--~'   |       \
-//   /        .'/|.-\--.     \       \
-//  /   .'-. /.-.;\  |\|'~'-.|\       \
-//  \       `-./`|_\_/ `     `\'.      \
-//   '.      ;     ___)        '.`;    /
-//     '-.,_ ;     ___)          \/   /
-//      \   ``'------'\       \   `  /
-//       '.    \       '.      |   ;/_
-//   ___>     '.       \_ _ _/   ,  '--.
-//  .'   '.   .-~~~~~-. /     |--'`~~-.  \
-// // / .---'/  .-~~-._/ / / /---..__.'  /
-//((_(_/    /  /      (_(_(_(---.__    .'
-//           | |     _              `~~`
-//           | |     \'.
-//            \ '....' |
-//             '.,___.' 
-//    )" << endl;
+            //
+            //            cout << R"(
+            //                __,__ 
+            //        .--.  .-"     "-.  .--.
+            //       / .. \/  .-. .-.  \/ .. \
+            //      | |  '|  /   Y   \  |'  | |
+            //      | \   \  \ 0 | 0 /  /   / |
+            //       \ '- ,\.-"`` ``"-./, -' /
+            //        `'-' /_   ^ ^   _\ '-'`
+            //        .--'|  \._ _ _./  |'--.
+            //      /`    \   \.-.  /   /    `\
+            //     /       '._/  |-' _.'       \
+            //    /          ;  /--~'   |       \
+            //   /        .'/|.-\--.     \       \
+            //  /   .'-. /.-.;\  |\|'~'-.|\       \
+            //  \       `-./`|_\_/ `     `\'.      \
+            //   '.      ;     ___)        '.`;    /
+            //     '-.,_ ;     ___)          \/   /
+            //      \   ``'------'\       \   `  /
+            //       '.    \       '.      |   ;/_
+            //   ___>     '.       \_ _ _/   ,  '--.
+            //  .'   '.   .-~~~~~-. /     |--'`~~-.  \
+            // // / .---'/  .-~~-._/ / / /---..__.'  /
+            //((_(_/    /  /      (_(_(_(---.__    .'
+            //           | |     _              `~~`
+            //           | |     \'.
+            //            \ '....' |
+            //             '.,___.' 
+            //    )" << endl;
 
         }
         else if (favorite == "Зайчик") {
-//            cout << R"(
-//         , 
-//        /|      __
-//       / |   ,-~ /
-//      Y :|  //  /
-//      | jj /( .^
-//      >-"~"-v"
-//     /       Y
-//    jo  o    |
-//   ( ~T~     j
-//    >._-' _./
-//   /   "~"  |
-//  Y     _,  |
-// /| ;-"~ _  l
-/// l/ ,-~    \
-//\//\/      .- \
-// Y        /    Y
-// l       I     !
-// ]\      _\    /"\
-//(" ~----( ~   Y.  )
-//    )" << endl;
+            //            cout << R"(
+            //         , 
+            //        /|      __
+            //       / |   ,-~ /
+            //      Y :|  //  /
+            //      | jj /( .^
+            //      >-"~"-v"
+            //     /       Y
+            //    jo  o    |
+            //   ( ~T~     j
+            //    >._-' _./
+            //   /   "~"  |
+            //  Y     _,  |
+            // /| ;-"~ _  l
+            /// l/ ,-~    \
+            //\//\/      .- \
+            // Y        /    Y
+            // l       I     !
+            // ]\      _\    /"\
+            //(" ~----( ~   Y.  )
+            //    )" << endl;
 
-    cout << R"(
+            cout << R"(
                      /\    .-"/
                     /  ; .'  .' 
                    :   :/  .'   
@@ -1326,10 +1205,10 @@ o   .     -. .----<(o)_--. .-'
             getline(file, favorite);
             getline(file, gender);
             getline(file, favorite_food);
-            file >> choice_menu >> money 
+            file >> choice_menu >> money
                 >> product.num_dry_food >> product.num_hay >> product.num_carrot
                 >> product.num_banana >> product.num_fish
-                >> product.num_soap >> product.num_shampoo 
+                >> product.num_soap >> product.num_shampoo
                 >> product.num_shower_gel >> product.num_soapy_washcloth >>
                 food_indicator >> wash_indicator
                 >> love_indicator
@@ -1361,15 +1240,15 @@ o   .     -. .----<(o)_--. .-'
 
 };
 
-int main() {
+main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
     Tamagotchi pet;
     pet.load("tamagotchi_save.txt");
-     Sleep(1500);
+    Sleep(1500);
 
-    int favorite = 0, gender = 0, choice_menu=0;
+    int favorite = 0, gender = 0, choice_menu = 0;
     string name, favorite_food;
 
     if (pet.getName().empty()) {
@@ -1446,7 +1325,7 @@ int main() {
 
         pet.save("tamagotchi_save.txt");
     }
-    
+
     pet.main_screen();
     pet.menu();
 
