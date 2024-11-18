@@ -1160,7 +1160,7 @@ public:
     Cat(const string& petName, const string& petFavorite, const string& petGender, const string& petFood,
         int petChoiceMenu, int petMoney, const Product& petProduct, int petFoodIndicator, int petWashIndicator,
         int petLoveIndicator, time_t petLastUpdateTime, time_t petLastLoveUpdateTime)
-        : Tamagotchi(petName, "Котик", petGender, "Риба", petChoiceMenu, petMoney, petProduct, petFoodIndicator,
+        : Tamagotchi(petName, "Котик", petGender, "риба", petChoiceMenu, petMoney, petProduct, petFoodIndicator,
             petWashIndicator, petLoveIndicator, petLastUpdateTime, petLastLoveUpdateTime) {}
 
     void feed_img() override {
@@ -1288,7 +1288,7 @@ public:
     Monkey(const string& petName, const string& petFavorite, const string& petGender, const string& petFood,
         int petChoiceMenu, int petMoney, const Product& petProduct, int petFoodIndicator, int petWashIndicator,
         int petLoveIndicator, time_t petLastUpdateTime, time_t petLastLoveUpdateTime)
-        : Tamagotchi(petName, "Мавпочка", petGender, "Банан", petChoiceMenu, petMoney, petProduct, petFoodIndicator,
+        : Tamagotchi(petName, "Мавпочка", petGender, "банан", petChoiceMenu, petMoney, petProduct, petFoodIndicator,
             petWashIndicator, petLoveIndicator, petLastUpdateTime, petLastLoveUpdateTime) {}
     void feed_img() override {
         cout << "                    __,__ " << endl;
@@ -1385,7 +1385,7 @@ public:
     Rabbit(const string& petName, const string& petFavorite, const string& petGender, const string& petFood,
         int petChoiceMenu, int petMoney, const Product& petProduct, int petFoodIndicator, int petWashIndicator,
         int petLoveIndicator, time_t petLastUpdateTime, time_t petLastLoveUpdateTime)
-        : Tamagotchi(petName, "Зайчик", petGender, "Морква", petChoiceMenu, petMoney, petProduct, petFoodIndicator,
+        : Tamagotchi(petName, "Зайчик", petGender, "морква", petChoiceMenu, petMoney, petProduct, petFoodIndicator,
             petWashIndicator, petLoveIndicator, petLastUpdateTime, petLastLoveUpdateTime) {}
     void feed_img() override {
         cout << "       /|      __ " << endl;
